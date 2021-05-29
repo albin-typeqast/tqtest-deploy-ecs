@@ -21,9 +21,7 @@ After download change permissions (if you already have it skip it)
 In AWS account run this CloudFormation template <ecs-cluster.template>, set name to EcsClusterStack and select key name. All other settings leave default  
 When its done add another CloudFormation template <ecs-jenkins-demo.template>, set name to Jenkins and leave all other setting on that page as default  
 When its done create ECR repository (private) and name it hello-world  
-In EC2 console look for ssh to Jenkins instance and take public ip  
-`ssh -i <key> ec2-user@<ip_of_jenkins>`  
-`sudo cat /var/lib/jenkins/secrets/initialAdminPassword`(and copy password)    
+In EC2 console look for Jenkins instance and copy initial pass from syslog 
 Go to your favorite browser and paste public hostname of Jenkins server  
 Paste password which you copy from previous step  
 Choose Install suggested plugins  
