@@ -319,8 +319,8 @@
     "LoadBalancer": {
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
       "Properties": {
-         "Name": {"Ref": "EcsCluster-LB"},
-         "Subnets": {"Ref": "Subnets"},
+         "Name": {"Fn::Sub": [ "${EcsCluster}-LoadBalancer", { "EcsCluster": {"Ref": "EcsCluster"}} ]},
+         "Subnets": {"Ref": "SubnetsIds"},
          "SecurityGroups": [
             {"Ref": "SecurityGroup"}
          ],
@@ -349,7 +349,7 @@
     "TQTest-helloworld-TargetGroup": {
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
       "Properties": {
-         "Name": {"Sub": ${EnvironmentName}-defaultTG}},
+         "Name": {"Fn::Sub": [ "${EcsCluster}-defaultTG", { "EcsCluster": {"Ref": "EcsCluster"}} ]}
          "VpcId": {"Ref": "VpcId"},
          "Port": 80,
          "Protocol": "HTTP"
