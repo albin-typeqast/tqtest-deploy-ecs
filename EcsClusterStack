@@ -5,7 +5,9 @@
     "VpcCidrs": {
       "vpc": {"cidr" : "10.0.0.0/16"},
       "pubsubnet1": {"cidr" : "10.0.0.0/24"},
-      "pubsubnet2": {"cidr" :"10.0.1.0/24"}
+      "pubsubnet2": {"cidr" :"10.0.1.0/24"},
+      "pubsubnet3": {"cidr" :"10.0.2.0/24"},
+      "pubsubnet4": {"cidr" :"10.0.3.0/24"}
     },
     "AWSRegionToAMI" : {
       "us-east-1"      : { "AMIID" : "ami-40286957" },
@@ -79,7 +81,7 @@
       "ConstraintDescription": "VPC Id must begin with 'vpc-' or leave blank to have a new VPC created"
     },
     "SubnetIds": {
-      "Type": "CommaDelimitedList",
+      "Type": "List<String>",
       "Description": "Optional - Comma separated list of two (2) existing VPC Subnet Ids where ECS instances will run.  Required if setting VpcId.",
       "Default": ""
     },
@@ -253,6 +255,78 @@
         }
       }
     },
+    "PubSubnetJenkinsAz1": {
+      "Condition": "CreateVpcResources",
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": {
+          "Fn::FindInMap": ["VpcCidrs", "pubsubnet3", "cidr"]
+        },
+        "MapPublicIpOnLaunch": "true",
+        "AvailabilityZone": {
+          "Fn::If": [
+            "UseSpecifiedVpcAvailabilityZones",
+            {
+              "Fn::Select": [
+                "0",
+                {
+                  "Ref": "VpcAvailabilityZones"
+                }
+              ]
+            },
+            {
+              "Fn::Select": [
+                "0",
+                {
+                  "Fn::GetAZs": {
+                    "Ref": "AWS::Region"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "PubSubnetJenkinsAz2": {
+      "Condition": "CreateVpcResources",
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": {
+          "Fn::FindInMap": ["VpcCidrs", "pubsubnet4", "cidr"]
+        },
+        "MapPublicIpOnLaunch": "true",
+        "AvailabilityZone": {
+          "Fn::If": [
+            "UseSpecifiedVpcAvailabilityZones",
+            {
+              "Fn::Select": [
+                "1",
+                {
+                  "Ref": "VpcAvailabilityZones"
+                }
+              ]
+            },
+            {
+              "Fn::Select": [
+                "1",
+                {
+                  "Fn::GetAZs": {
+                    "Ref": "AWS::Region"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
     "InternetGateway": {
       "Condition": "CreateVpcResources",
       "Type": "AWS::EC2::InternetGateway"
@@ -316,13 +390,61 @@
         }
       }
     },
+    "PubSubnet3RouteTableAssociation": {
+      "Condition": "CreateVpcResources",
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PubSubnetJenkinsAz1"
+        },
+        "RouteTableId": {
+          "Ref": "RouteViaIgw"
+        }
+      }
+    },
+    "PubSubnet4RouteTableAssociation": {
+      "Condition": "CreateVpcResources",
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PubSubnetJenkinsAz2"
+        },
+        "RouteTableId": {
+          "Ref": "RouteViaIgw"
+        }
+      }
+    },
+    "LoadBalancerSecurityGroup": {
+      "Condition": "CreateSecurityGroup",
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "LB Allowed Ports",
+        "VpcId": {
+          "Fn::If": [
+            "CreateVpcResources",
+            {
+              "Ref": "Vpc"
+            },
+            {
+              "Ref": "VpcId"
+            }
+          ]
+        },
+        "SecurityGroupIngress" : [ {
+            "IpProtocol" : "tcp",
+            "FromPort" : "80",
+            "ToPort" : "80",
+            "CidrIp" : "0.0.0.0/0"
+        } ]
+      }
+    },
     "LoadBalancer": {
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
       "Properties": {
          "Name": {"Fn::Sub": [ "${EcsCluster}-LoadBalancer", { "EcsCluster": {"Ref": "EcsCluster"}} ]},
-         "Subnets": {"Ref": "SubnetIds"},
+         "Subnets": [ "Ref": "PubSubnetAz1", "Ref": "PubSubnetAz2" ],
          "SecurityGroups": [
-            {"Ref": "SecurityGroup"}
+            {"Ref": "LoadBalancerSecurityGroup"}
          ],
          "Tags": [
             {
@@ -350,7 +472,7 @@
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
       "Properties": {
          "Name": {"Fn::Sub": [ "${EcsCluster}-defaultTG", { "EcsCluster": {"Ref": "EcsCluster"}} ]},
-         "VpcId": {"Ref": "VpcId"},
+         "VpcId": {"Ref": "Vpc"},
          "Port": 80,
          "Protocol": "HTTP"
       }
@@ -381,7 +503,7 @@
             "IpProtocol" : "tcp",
             "FromPort" : { "Ref" : "EcsPort" },
             "ToPort" : { "Ref" : "EcsPort" },
-            "CidrIp" : { "Ref" : "SourceCidr" }
+            "SourceSecurityGroupId" : { "Ref" : "LoadBalancerSecurityGroup" }
         } ]
       }
     },
@@ -424,12 +546,11 @@
     "EcsInstanceLc": {
       "Condition": "CreateEC2LCWithKeyPair",
       "Type": "AWS::AutoScaling::LaunchConfiguration",
-      "Properties": {
-	"ImageId": { "Fn::FindInMap" : [ "AWSRegionToAMI", { "Ref" : "AWS::Region" }, "AMIID" ] },
+      "Properties": {"ImageId": { "Fn::FindInMap" : [ "AWSRegionToAMI", { "Ref" : "AWS::Region" }, "AMIID" ] },
         "InstanceType": {
           "Ref" : "EcsInstanceType"
         },
-        "AssociatePublicIpAddress": true,
+        "AssociatePublicIpAddress": false,
         "IamInstanceProfile": {
           "Ref": "EcsInstanceProfile"
         },
@@ -467,12 +588,11 @@
     "EcsInstanceLcWithoutKeyPair": {
       "Condition": "CreateEC2LCWithoutKeyPair",
       "Type": "AWS::AutoScaling::LaunchConfiguration",
-      "Properties": {
-	"ImageId": { "Fn::FindInMap" : [ "AWSRegionToAMI", { "Ref" : "AWS::Region" }, "AMIID" ] },
+      "Properties": {"ImageId": { "Fn::FindInMap" : [ "AWSRegionToAMI", { "Ref" : "AWS::Region" }, "AMIID" ] },
         "InstanceType": {
           "Ref": "EcsInstanceType"
         },
-        "AssociatePublicIpAddress": true,
+        "AssociatePublicIpAddress": false,
         "IamInstanceProfile": {
           "Ref": "EcsInstanceProfile"
         },
@@ -589,6 +709,16 @@
       "Description": "The ID of subnet B",
       "Value": {"Ref":"PubSubnetAz2"},
       "Export": { "Name" : {"Fn::Sub":"${AWS::StackName}-SubnetB"}}
+    },
+    "SubnetAJenkins": {
+      "Description": "The ID of subnet for Jenkins",
+      "Value": {"Ref":"PubSubnetJenkinsAz1"},
+      "Export": { "Name" : {"Fn::Sub":"${AWS::StackName}-SubnetAJenkins"}}
+    },
+    "SubnetBJenkins": {
+      "Description": "The ID of subnet for Jenkins",
+      "Value": {"Ref":"PubSubnetJenkinsAz2"},
+      "Export": { "Name" : {"Fn::Sub":"${AWS::StackName}-SubnetBJenkins"}}
     },
     "AvailabilityZone1": {
       "Description": "AZ 1",
