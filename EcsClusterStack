@@ -320,7 +320,7 @@
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
       "Properties": {
          "Name": {"Fn::Sub": [ "${EcsCluster}-LoadBalancer", { "EcsCluster": {"Ref": "EcsCluster"}} ]},
-         "Subnets": {"Ref": "SubnetsIds"},
+         "Subnets": {"Ref": "SubnetIds"},
          "SecurityGroups": [
             {"Ref": "SecurityGroup"}
          ],
