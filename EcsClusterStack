@@ -341,15 +341,15 @@
          "DefaultActions": [
             {
                "Type": "forward",
-               "TargetGroupArn": {"Ref": "TQTest-helloworld-TargetGroup"}
+               "TargetGroupArn": {"Ref": "TargetGroup"}
             }
          ]
       }
     },
-    "TQTest-helloworld-TargetGroup": {
+    "TargetGroup": {
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
       "Properties": {
-         "Name": {"Fn::Sub": [ "${EcsCluster}-defaultTG", { "EcsCluster": {"Ref": "EcsCluster"}} ]}
+         "Name": {"Fn::Sub": [ "${EcsCluster}-defaultTG", { "EcsCluster": {"Ref": "EcsCluster"}} ]},
          "VpcId": {"Ref": "VpcId"},
          "Port": 80,
          "Protocol": "HTTP"
@@ -548,7 +548,7 @@
         "DesiredCapacity": {
           "Ref": "AsgMaxSize"
         },
-        "TargetGroupARNs" : [ { "Ref" : "TQTest-helloworld-TargetGroup" } ],
+        "TargetGroupARNs" : [ { "Ref" : "TargetGroup" } ],
         "Tags": [
           {
             "Key": "Name",
