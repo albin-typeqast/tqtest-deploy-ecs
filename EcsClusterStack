@@ -349,7 +349,7 @@
     "TQTest-helloworld-TargetGroup": {
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
       "Properties": {
-         "Name": {"Sub": ${EnvironmentName}-defaultTG},
+         "Name": {"Sub": ${EnvironmentName}-defaultTG}},
          "VpcId": {"Ref": "VpcId"},
          "Port": 80,
          "Protocol": "HTTP"
