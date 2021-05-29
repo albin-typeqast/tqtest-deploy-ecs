@@ -1,6 +1,6 @@
 tqtest-ecr-hello-world
 ======================
-
+ 
 ## Running locally
 
 Build and run using Docker Compose:
