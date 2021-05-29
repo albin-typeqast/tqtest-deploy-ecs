@@ -191,7 +191,7 @@
         "CidrBlock": {
           "Fn::FindInMap": ["VpcCidrs", "pubsubnet1", "cidr"]
         },
-        "MapPublicIpOnLaunch": "true",
+        "MapPublicIpOnLaunch": "false",
         "AvailabilityZone": {
           "Fn::If": [
             "UseSpecifiedVpcAvailabilityZones",
@@ -227,7 +227,7 @@
         "CidrBlock": {
           "Fn::FindInMap": ["VpcCidrs", "pubsubnet2", "cidr"]
         },
-        "MapPublicIpOnLaunch": "true",
+        "MapPublicIpOnLaunch": "false",
         "AvailabilityZone": {
           "Fn::If": [
             "UseSpecifiedVpcAvailabilityZones",
