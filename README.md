@@ -39,7 +39,7 @@ After download change permissions (if you already have it skip it)
 `git@github.com:albin-typeqast/tqtest-deploy-ecs.git`  
 `cd tqtest-deploy-ecs/`  
 
-Fulfill requirements and adjust variables in **deploy-ecs-ecr-jenkins.sh** script
+Fulfill requirements and adjust variables in **deploy-ecs-ecr-jenkins.sh** script  
 Run `./deploy-ecs-ecr-jenkins.sh` script  
 Script just executes three commands:  
   1. creates ECS cluster, networking and two EC2 instances used by the cluster (in private subnet using NATGateway to access the internet and ECS/ECR)  
