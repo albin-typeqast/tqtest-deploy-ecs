@@ -25,7 +25,7 @@ ECSCLUSTER_STACKNAME="EcsClusterStack"
 JENKINS_STACKNAME="Jenkins"
 
 # ECR repository name
-ECRREPO="tqtest-ecr-heello-world"
+ECRREPO="tqtest-ecr-hello-world"
 
 
 # set profile switch for AWS commands if $PROFILE variable is not ""
