@@ -75,10 +75,14 @@ Add webhook
 
 ## Configure Jenkins job
 Create a **freestyle project** in Jenkins and add name  
-Under **source code management**, select **git** and type the name of personal GitHub repository you have created earlier, *https://github.com/SOME_PERSONAL_REPO/tqtest-deploy-ecs.git* 
+
+Under **source code management**, select **git** and type the name of personal GitHub repository you have created earlier, *https://github.com/SOME_PERSONAL_REPO/tqtest-deploy-ecs.git*  
+
 Select Branch Specifier to */master  
+
 Under **build triggers**, select **Github hook trigger for GITScm polling** in order to connect with Github webhook (as soon as we push our script from local environment to Github, Jenkins will be triggered sponteneously)  
 Under **Build environment**, select **delete workspace before build starts**  
+
 Add another build step with **execute shell** selected. In the command field, type or paste the following text: (ECR_REPO and REGION accordingly to your account)  
 
 ```
@@ -99,6 +103,7 @@ Add another build step by selectting **docker build and publish**
 On **Repository Name** add: *XXXXXXXXXXXX.dkr.ecr.eu-central-1.amazonaws.com/tqtest-ecr-hello-world* (accordingly to your account)  
 On TAG add: *v_$BUILD_NUMBER*  
 On Docker registry URL add: *http://XXXXXXXXXXXX.dkr.ecr.eu-central-1.amazonaws.com/tqtest-ecr-hello-world* (accordingly to your account)  
+
 Add another build step by selecting **execute shell**. In the command field, type or paste the following text: (REGION accordingly to your account)  
 
 ```
