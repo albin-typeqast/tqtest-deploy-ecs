@@ -1,4 +1,4 @@
-tqtest-ecr-hello-world
+tqtest-ecs-hello-world
 ======================
  
 ## Running locally
