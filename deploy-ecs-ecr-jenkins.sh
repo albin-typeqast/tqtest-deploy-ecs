@@ -10,15 +10,15 @@
 #
 # adjust variables per need: 
 #	- $REGION 
-#	- $PROFILE if using profiles when authenticating with AWS API
+#	- $PROFILE if using profiles when authenticating with AWS API, otherwise leave empty
 #	- $KEYPAIR
 
 
 # General variables
 REGION="eu-west-1"
-PROFILE="tq-dev"
-# KeyPair used to connect to instances
-KEYPAIR="tqtest-albin"
+PROFILE=""
+# alias of KeyPair used to connect to instances
+KEYPAIR="tqtest-keypair"
 
 # CloudFormation stack names
 ECSCLUSTER_STACKNAME="EcsClusterStack"
