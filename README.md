@@ -16,7 +16,7 @@ Create a personal repository on github
 Clone tqtest repo localy on your PC:
 `git clone git@github.com:albin-typeqast/tqtest-deploy-ecs.git`  
 CD into tqtest-deploy-ecs folder  
-Delete the hidden .git directory with command rm -fR .git
+Delete the hidden .git directory with command rm -fR .git  
 Reinitialize the repository and push the contents to your new GitHub repository using SSH by running the following command  
 `git init`  
 `git add .`  
