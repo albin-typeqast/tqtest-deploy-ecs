@@ -46,6 +46,7 @@ Script just executes three commands:
   2. creates Jenkins server for deployment purposes (in public subnet just for simplicity of demonstration purposes)  
     - should be in private subnet with bastion instance for connecting to the Jenkins server, DO NOT USE IN PRODUCTION !!!  
   3. creates ECR repository  
+
 You can also run the commands manually 
 
 
