@@ -14,7 +14,7 @@ Build and run using Docker Compose:
 ## Create a personal GIT repository so you can make changes and push to repo (if you already have it skip it)
 Create a personal repository on github 
 Clone tqtest repo localy on your PC:
-`git clone git@github.com:albin-typeqast/tqtest-deploy-ecs.git` 
+`git clone git@github.com:albin-typeqast/tqtest-deploy-ecs.git`  
 CD into tqtest-deploy-ecs folder  
 Delete the hidden .git directory with command rm -fR .git
 Reinitialize the repository and push the contents to your new GitHub repository using SSH by running the following command  
