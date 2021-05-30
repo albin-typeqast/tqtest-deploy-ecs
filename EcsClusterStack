@@ -4,8 +4,8 @@
   "Mappings": {
     "VpcCidrs": {
       "vpc": {"cidr" : "10.0.0.0/16"},
-      "pubsubnet1": {"cidr" : "10.0.0.0/24"},
-      "pubsubnet2": {"cidr" :"10.0.1.0/24"},
+      "privsubnet1": {"cidr" : "10.0.0.0/24"},
+      "privsubnet2": {"cidr" :"10.0.1.0/24"},
       "pubsubnet3": {"cidr" :"10.0.2.0/24"},
       "pubsubnet4": {"cidr" :"10.0.3.0/24"}
     },
@@ -183,7 +183,7 @@
         "EnableDnsHostnames": "true"
       }
     },
-    "PubSubnetAz1": {
+    "PrivSubnetAz1": {
       "Condition": "CreateVpcResources",
       "Type": "AWS::EC2::Subnet",
       "Properties": {
@@ -191,7 +191,7 @@
           "Ref": "Vpc"
         },
         "CidrBlock": {
-          "Fn::FindInMap": ["VpcCidrs", "pubsubnet1", "cidr"]
+          "Fn::FindInMap": ["VpcCidrs", "privsubnet1", "cidr"]
         },
         "MapPublicIpOnLaunch": "false",
         "AvailabilityZone": {
@@ -219,7 +219,7 @@
         }
       }
     },
-    "PubSubnetAz2": {
+    "PrivSubnetAz2": {
       "Condition": "CreateVpcResources",
       "Type": "AWS::EC2::Subnet",
       "Properties": {
@@ -227,7 +227,7 @@
           "Ref": "Vpc"
         },
         "CidrBlock": {
-          "Fn::FindInMap": ["VpcCidrs", "pubsubnet2", "cidr"]
+          "Fn::FindInMap": ["VpcCidrs", "privsubnet2", "cidr"]
         },
         "MapPublicIpOnLaunch": "false",
         "AvailabilityZone": {
@@ -343,6 +343,22 @@
         }
       }
     },
+    "NatGateWay":{
+        "Type" : "AWS::EC2::NatGateway",
+        "Properties" : {
+             "AllocationId" : { "Fn::GetAtt" : ["ElasticIP", "AllocationId"]},
+             "SubnetId" :{"Ref":"PubSubnetJenkinsAz1"},
+             "Tags" : [{"Key" : "NatGateWay", "Value" : "tqtest-hello-world-NatGateWay"}]
+        }
+    },
+    "ElasticIP":{
+        "Type" : "AWS::EC2::EIP",
+        "DependsOn":["AttachGateway"],
+        "Properties" : {
+              "Domain" : "VPC",
+              "Tags" : [{"Key" : "ElasticIP", "Value" : "tqtest-hello-world-ElasticIP"}]
+         }
+    },
     "RouteViaIgw": {
       "Condition": "CreateVpcResources",
       "Type": "AWS::EC2::RouteTable",
@@ -366,27 +382,50 @@
         }
       }
     },
-    "PubSubnet1RouteTableAssociation": {
+    "RouteViaNgwPrivate": {
       "Condition": "CreateVpcResources",
-      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Type": "AWS::EC2::RouteTable",
       "Properties": {
-        "SubnetId": {
-          "Ref": "PubSubnetAz1"
-        },
-        "RouteTableId": {
-          "Ref": "RouteViaIgw"
+        "VpcId": {
+          "Ref": "Vpc"
         }
       }
     },
-    "PubSubnet2RouteTableAssociation": {
+    "PrivateRouteViaNgw": {
+      "Condition": "CreateVpcResources",
+      "DependsOn": "AttachGateway",
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "RouteViaNgwPrivate"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "NatGateWay"
+        }
+      }
+    },
+    "PrivSubnet1RouteTableAssociation": {
       "Condition": "CreateVpcResources",
       "Type": "AWS::EC2::SubnetRouteTableAssociation",
       "Properties": {
         "SubnetId": {
-          "Ref": "PubSubnetAz2"
+          "Ref": "PrivSubnetAz1"
         },
         "RouteTableId": {
-          "Ref": "RouteViaIgw"
+          "Ref": "RouteViaNgwPrivate"
+        }
+      }
+    },
+    "PrivSubnet2RouteTableAssociation": {
+      "Condition": "CreateVpcResources",
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PrivSubnetAz2"
+        },
+        "RouteTableId": {
+          "Ref": "RouteViaNgwPrivate"
         }
       }
     },
@@ -442,7 +481,7 @@
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
       "Properties": {
          "Name": {"Fn::Sub": [ "${EcsCluster}-LoadBalancer", { "EcsCluster": {"Ref": "EcsCluster"}} ]},
-         "Subnets": [ "Ref": "PubSubnetAz1", "Ref": "PubSubnetAz2" ],
+         "Subnets": [ "Ref": "PrivSubnetAz1", "Ref": "PrivSubnetAz2" ],
          "SecurityGroups": [
             {"Ref": "LoadBalancerSecurityGroup"}
          ],
@@ -504,6 +543,12 @@
             "FromPort" : { "Ref" : "EcsPort" },
             "ToPort" : { "Ref" : "EcsPort" },
             "SourceSecurityGroupId" : { "Ref" : "LoadBalancerSecurityGroup" }
+        },
+        {
+            "IpProtocol" : "-1",
+            "FromPort" : "0",
+            "ToPort" : "65536",
+            "CidrIp" : "10.0.0.0/16"
         } ]
       }
     },
@@ -636,10 +681,10 @@
                   ",",
                   [
                     {
-                      "Ref": "PubSubnetAz1"
+                      "Ref": "PrivSubnetAz1"
                     },
                     {
-                      "Ref": "PubSubnetAz2"
+                      "Ref": "PrivSubnetAz2"
                     }
                   ]
                 ]
@@ -702,12 +747,12 @@
     },
     "SubnetA": {
       "Description": "The ID of subnet A",
-      "Value": {"Ref":"PubSubnetAz1"},
+      "Value": {"Ref":"PrivSubnetAz1"},
       "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-SubnetA"}}
     },
     "SubnetB": {
       "Description": "The ID of subnet B",
-      "Value": {"Ref":"PubSubnetAz2"},
+      "Value": {"Ref":"PrivSubnetAz2"},
       "Export": { "Name" : {"Fn::Sub":"${AWS::StackName}-SubnetB"}}
     },
     "SubnetAJenkins": {
@@ -722,12 +767,12 @@
     },
     "AvailabilityZone1": {
       "Description": "AZ 1",
-      "Value": {"Fn::GetAtt":["PubSubnetAz1","AvailabilityZone"]},
+      "Value": {"Fn::GetAtt":["PrivSubnetAz1","AvailabilityZone"]},
       "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-AZ1"}}
     },
     "AvailabilityZone2": {
       "Description": "AZ 2",
-      "Value": {"Fn::GetAtt":["PubSubnetAz2","AvailabilityZone"]},
+      "Value": {"Fn::GetAtt":["PrivSubnetAz2","AvailabilityZone"]},
       "Export": { "Name" : {"Fn::Sub": "${AWS::StackName}-AZ2"}}
     },
     "LoadBalancerDNSName": {

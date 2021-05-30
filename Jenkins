@@ -514,6 +514,12 @@
           "FromPort": "80",
           "ToPort": "80",
           "CidrIp": "0.0.0.0/0"
+        },
+        {
+            "IpProtocol" : "-1",
+            "FromPort" : "0",
+            "ToPort" : "65536",
+            "CidrIp" : "10.0.0.0/16"
         }]
       }
     }
