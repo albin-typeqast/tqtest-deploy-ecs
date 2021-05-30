@@ -12,7 +12,7 @@ Build and run using Docker Compose:
     
 
 ## Create a personal GIT repository so you can make changes and push to repo (if you already have it skip it)
-Create a personal repository on github 
+Create a personal repository on github or fork it
 Clone tqtest repo localy on your PC:
 `git clone git@github.com:albin-typeqast/tqtest-deploy-ecs.git`  
 CD into tqtest-deploy-ecs folder  
