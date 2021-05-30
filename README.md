@@ -151,8 +151,8 @@ Paster the DNS name in the browser and the page should show up
 
 
 ## Exercise assignments:
-# Create DNS in Route53 so page shows up under custom name on the internet    
+### Create DNS in Route53 so page shows up under custom name on the internet    
 Find some free domain provider and setup Route53 to resolve our page on new domain  
-# Put Jenkins server in private subnet and setup bastion host in front  
+### Put Jenkins server in private subnet and setup bastion host in front  
 Move jenkins EC2 instance to private subnet and configure bastion in public one with correct security groups
   
