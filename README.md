@@ -8,7 +8,27 @@ Build and run using Docker Compose:
 `git@github.com:albin-typeqast/tqtest-deploy-ecs.git`  
 `cd tqtest-deploy-ecs/`  
 `docker-compose up`  
-`localhost:80`  
+`localhost:80` 
+    
+
+## Create a personal GIT repository so you can make changes and push to repo (if you already have it skip it)
+Create a personal repository on github 
+Clone tqtest repo localy on your PC:
+`git clone git@github.com:albin-typeqast/tqtest-deploy-ecs.git` 
+CD into tqtest-deploy-ecs folder  
+Delete the hidden .git directory with command rm -fR .git
+Reinitialize the repository and push the contents to your new GitHub repository using SSH by running the following command  
+`git init`  
+`git add .`  
+`git commit -m "Initial commit"`  
+If you are using SSH, run the following command:  
+`git remote add origin 'git@github.com:<your_repo>.git'`  
+If you are using HTTPS, run the following command:  
+`git remote add origin 'https://github.com/<your_repo>.git'`  
+Example:  
+`git remote add origin 'https://github.com/SOME_PERSONAL_REPO/tqtest-deploy-ecs.git'`  
+`git push -u origin master`  
+Now you will be able to make changes to the code which will later trigger build and deploy on Jenkins server and activate it on the ECS service  
 
 
 ## Deploying to ECS
@@ -39,29 +59,11 @@ Go to tab Manage Jenkins and then Manage Plugins
 On Available tab choose **Amazon ECR** and **CloudBees Docker Build and Publish** plugin  
 Then select Download now and install after restart  
 Select **Restart Jenkins when installation is complete and no jobs are running**  
-Refresh page after one min  
-    
-
-## Create a GIT repository so you can make changes and push to repo(if you already have it skip it)
-Create a repository  
-On your PC do next  
-Go into tq-work folder  
-Delete the hidden .git directory with command rm -fR .git
-Reinitialize the repository and push the contents to your new GitHub repository using SSH by running the following command  
-`git init`  
-`git add .`  
-`git commit -m "Initial commit"`  
-If you are using SSH, run the following command:  
-<git remote add origin 'git@github.com:<your_repo>.git'>  
-If you are using HTTPS, run the following command:  
-<git remote add origin 'https://github.com/<your_repo>.git'>  
-Example:  
-`git remote add origin 'https://github.com/runticm/tq-work.git'`  
-`git push -u origin master`  
+Refresh page after one min   
 
 
 ## Enable automatic trigger in Jenkins by adding webhook
-In GitHub repo, click settings (**Not main settings! It is Repo settings**)  
+In GitHub personal repo, click settings (**Not main settings! It is Repo settings**)  
 Under settings, select **Webhooks**  
 Add **Payload URL** of your Jenkins public hostname and add sufix github-webhook/ (**Note the slash character "/" at the end, without it, it won't work**)  
 Example: *http://ec2-3-120-237-218.eu-central-1.compute.amazonaws.com/github-webhook/*    
@@ -71,7 +73,7 @@ Add webhook
 
 ## Configure Jenkins job
 Create a **freestyle project** in Jenkins and add name  
-Under **source code management**, select **git** and type the name of this GitHub repository, *https://github.com/albin-typeqast/tqtest-deploy-ecs.git* 
+Under **source code management**, select **git** and type the name of personal GitHub repository you have created earlier, *https://github.com/SOME_PERSONAL_REPO/tqtest-deploy-ecs.git* 
 Select Branch Specifier to */master  
 Under **build triggers**, select **Github hook trigger for GITScm polling** in order to connect with Github webhook (as soon as we push our script from local environment to Github, Jenkins will be triggered sponteneously)  
 Under **Build environment**, select **delete workspace before build starts**  
@@ -140,19 +142,17 @@ On your PC do folowing
 `git commit -m "initial commit"`  
 `git push`  
 On Jenkins web page we see that job is triggered  
-On AWS go to ECS  
-Select Cluster typeqast-workshop  
-On Task bar select task  
-Expand under Containers hello-world  
-Take external link address and here is our deployment which is builded from scratch  
-On top of that we go to Auto Scaling Groups  
-Go to EcsClusterStack  
-On Load balancing go to edit   
-Copy DNS name  
-Go to Route53, then hosted zones and pick your domain  
-There create a record  
-Record name can be test-deploy and Record type is CNAME  
-Paste into Value field ELB dns name which you copy from previus step and Create records  
-Go to your web page and see what we did  
+Go to AWS, EC2 console, under **Load balancers**, find the one we created and under **Description** tab copy the **DNS name**  
+Paster the DNS name in the browser and the page should show up
 
-	:) Hello world (:
+
+  :) Hello world (:
+
+
+
+## Exercise assignments:
+# Create DNS in Route53 so page shows up under custom name on the internet    
+Find some free domain provider and setup Route53 to resolve our page on new domain  
+# Put Jenkins server in private subnet and setup bastion host in front  
+Move jenkins EC2 instance to private subnet and configure bastion in public one with correct security groups
+  

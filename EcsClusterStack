@@ -481,7 +481,7 @@
       "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
       "Properties": {
          "Name": {"Fn::Sub": [ "${EcsCluster}-LoadBalancer", { "EcsCluster": {"Ref": "EcsCluster"}} ]},
-         "Subnets": [ "Ref": "PrivSubnetAz1", "Ref": "PrivSubnetAz2" ],
+         "Subnets": [ "Ref": "PubSubnetJenkinsAz1", "Ref": "PubSubnetJenkinsAz2" ],
          "SecurityGroups": [
             {"Ref": "LoadBalancerSecurityGroup"}
          ],
