@@ -102,7 +102,6 @@ sh login.sh
 Add another build step by selectting **docker build and publish**
 On **Repository Name** add: *XXXXXXXXXXXX.dkr.ecr.eu-central-1.amazonaws.com/tqtest-ecr-hello-world* (accordingly to your account)  
 On TAG add: *v_$BUILD_NUMBER*  
-On Docker registry URL add: *http://XXXXXXXXXXXX.dkr.ecr.eu-central-1.amazonaws.com/tqtest-ecr-hello-world* (accordingly to your account)  
 
 Add another build step by selecting **execute shell**. In the command field, type or paste the following text: (REGION accordingly to your account)  
 
