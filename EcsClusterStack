@@ -624,8 +624,8 @@
                   "Ref": "EcsCluster"
                 },
                 " >> /etc/ecs/ecs.config\n",
-                "sudo yum update -y ecs-init",
-                "sudo systemctl restart docker"
+                "sudo yum update -y ecs-init\n",
+                "sudo systemctl restart docker\n"
               ]
             ]
           }
@@ -664,7 +664,9 @@
                 {
                   "Ref": "EcsCluster"
                 },
-                " >> /etc/ecs/ecs.config\n"
+                " >> /etc/ecs/ecs.config\n",
+                "sudo yum update -y ecs-init\n",
+                "sudo systemctl restart docker\n"
               ]
             ]
           }
