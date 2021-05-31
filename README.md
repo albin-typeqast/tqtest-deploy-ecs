@@ -136,10 +136,10 @@ if [ "$SERVICES" == "" ]; then
   if [ ${DESIRED_COUNT} = "0" ]; then
     DESIRED_COUNT="1"
   fi
-  aws ecs update-service --cluster ${CLUSTER} --region ${REGION} --service ${SERVICE_NAME} --task-definition ${FAMILY}:${REVISION} --desired-count ${DESIRED_COUNT}
+  aws ecs create-service --service-name ${SERVICE_NAME} --desired-count 1 --task-definition ${FAMILY} --cluster ${CLUSTER} --region ${REGION} --desired-count ${DESIRED_COUNT}
 else
   echo "entered new service"
-  aws ecs create-service --service-name ${SERVICE_NAME} --desired-count 1 --task-definition ${FAMILY} --cluster ${CLUSTER} --region ${REGION}
+  aws ecs update-service --cluster ${CLUSTER} --region ${REGION} --service ${SERVICE_NAME} --task-definition ${FAMILY}:${REVISION}
 fi
 ```
 
@@ -150,7 +150,7 @@ On your PC do folowing
 `git push`  
 On Jenkins web page we see that job is triggered  
 Go to AWS, EC2 console, under **Load balancers**, find the one we created and under **Description** tab copy the **DNS name**  
-Paster the DNS name in the browser and the page should show up
+Paste the DNS name in the browser and the page should show up
 
 
   :) Hello world (:
