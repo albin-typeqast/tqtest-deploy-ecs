@@ -24,7 +24,7 @@
     "EcsInstanceType": {
       "Type": "String",
       "Description": "ECS EC2 instance type",
-      "Default": "t2.micro",
+      "Default": "t2.medium",
       "AllowedValues": [
         "t2.nano",
         "t2.micro",
