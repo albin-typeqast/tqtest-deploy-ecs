@@ -625,7 +625,7 @@
                 },
                 " >> /etc/ecs/ecs.config\n",
                 "sudo yum update -y ecs-init\n",
-                "sudo systemctl restart docker\n"
+                "sudo service docker restart\n"
               ]
             ]
           }
@@ -666,7 +666,7 @@
                 },
                 " >> /etc/ecs/ecs.config\n",
                 "sudo yum update -y ecs-init\n",
-                "sudo systemctl restart docker\n"
+                "sudo service docker restart\n"
               ]
             ]
           }

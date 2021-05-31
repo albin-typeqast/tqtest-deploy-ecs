@@ -11,9 +11,13 @@ Build and run using Docker Compose:
 `localhost:80` 
     
 
-## Create a personal GIT repository so you can make changes and push to repo (if you already have it skip it)
-Create a personal repository on github or fork it  
-Clone tqtest repo localy on your PC:
+## Create a personal GIT repository or Fork existing repo, so you can make changes and push to repo (if you already have it skip it)  
+Fork git@github.com:albin-typeqast/tqtest-deploy-ecs.git  
+
+or  
+Create a personal repository on github  
+
+Clone tqtest repo localy on your PC:  
 `git clone git@github.com:albin-typeqast/tqtest-deploy-ecs.git`  
 CD into tqtest-deploy-ecs folder  
 Delete the hidden .git directory with command rm -fR .git  
@@ -139,14 +143,16 @@ if [ "$SERVICES" != "" ]; then
   aws ecs update-service --cluster ${CLUSTER} --region ${REGION} --service ${SERVICE_NAME} --task-definition ${FAMILY}:${REVISION} --desired-count ${DESIRED_COUNT}
 else
   echo "entered new service"
-  aws ecs create-service --service-name ${SERVICE_NAME} --desired-count 1 --task-definition ${FAMILY} --cluster ${CLUSTER} --region ${REGION}
+  aws ecs create-service --service-name ${SERVICE_NAME} --desired-count 2 --task-definition ${FAMILY} --cluster ${CLUSTER} --region ${REGION}
 fi
 ```
 
 ## Test everything
-On your PC do folowing  
+On your PC do folowing to test push to the repo and triggering build on jenkins:  
+while in local repo,
+`vim somefile.txt` and add some text in it
 `git add .`  
-`git commit -m "initial commit"`  
+`git commit -m "out big code change"`  
 `git push`  
 On Jenkins web page we see that job is triggered  
 Go to AWS, EC2 console, under **Load balancers**, find the one we created and under **Description** tab copy the **DNS name**  
