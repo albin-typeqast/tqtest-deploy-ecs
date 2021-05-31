@@ -16,9 +16,9 @@
 
 # General variables
 REGION="eu-west-1"
-PROFILE=""
+PROFILE="tq-dev"
 # alias of KeyPair used to connect to instances
-KEYPAIR="tqtest-keypair"
+KEYPAIR="tqtest-albin"
 
 # CloudFormation stack names
 ECSCLUSTER_STACKNAME="EcsClusterStack"
@@ -36,15 +36,15 @@ else
 fi
 
 # create ECS cluster composed of two EC2 instances from ./EcsClusterStack cloudformation template
-aws cloudformation deploy --template-file ./$ECSCLUSTER_STACKNAME --stack-name $ECSCLUSTER_STACKNAME --parameter-overrides KeyName=$KEYPAIR --tags "Key=env Value=dev" "Key=app Value=jenkins-server" "Key=cfn-stack Value=$ECSCLUSTER_STACKNAME" --capabilities CAPABILITY_IAM --region=$REGION $PROFILESWITCH
+aws cloudformation deploy --template-file ./$ECSCLUSTER_STACKNAME --stack-name $ECSCLUSTER_STACKNAME --parameter-overrides KeyName=$KEYPAIR --tags "env=dev" "app=tqtest-ecs-hello-world" "cfn-stack=$ECSCLUSTER_STACKNAME" --capabilities CAPABILITY_IAM --region=$REGION $PROFILESWITCH
 
 # create EC2 instance for Jenkins server from ./Jenkins cloudformation template
-aws cloudformation deploy --template-file ./$JENKINS_STACKNAME --stack-name $JENKINS_STACKNAME --parameter-overrides KeyName=$KEYPAIR --tags "Key=env Value=dev" "Key=app Value=jenkins-server" "Key=cfn-stack Value=$ECSCLUSTER_STACKNAME" --capabilities CAPABILITY_IAM --region=$REGION $PROFILESWITCH
+aws cloudformation deploy --template-file ./$JENKINS_STACKNAME --stack-name $JENKINS_STACKNAME --parameter-overrides KeyName=$KEYPAIR --tags "env=dev" "app=jenkins-server" "cfn-stack=$JENKINS_STACKNAME" --capabilities CAPABILITY_IAM --region=$REGION $PROFILESWITCH
  
 # create ECR repository
 CHECK_REPO=$(aws ecr describe-repositories $PROFILESWITCH | grep "repositoryName" | grep "$ECRREPO")
 if [[ -n $CHECK_REPO ]]; then
 	echo "Repository $ECRREPO already exists"
 else
-	aws ecr create-repository --repository-name $ECRREPO --tags "Key=env Value=dev" "Key=app Value=jenkins-server" "Key=cfn-stack Value=$ECSCLUSTER_STACKNAME" --region=$REGION $PROFILESWITCH
+	aws ecr create-repository --repository-name $ECRREPO --tags "env=dev" "app=tqtest-ecs-hello-world" --region=$REGION $PROFILESWITCH
 fi
