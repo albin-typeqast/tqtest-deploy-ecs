@@ -93,7 +93,7 @@ sudo usermod -aG docker $USER
 sudo chmod 777 /var/run/docker.sock
 PATH=$PATH:/usr/local/bin; export PATH
 REGION=eu-west-1
-ECR_REPO="XXXXXXXXXXXX.dkr.ecr.eu-central-1.amazonaws.com/tqtest-ecr-hello-world"
+ECR_REPO="XXXXXXXXXXXX.dkr.ecr.$REGION.amazonaws.com/tqtest-ecr-hello-world"
 #$(aws ecr get-login --region ${REGION})
 aws ecr get-login --no-include-email --region ${REGION}>>login.sh
 sh login.sh
