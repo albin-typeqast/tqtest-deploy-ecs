@@ -108,7 +108,7 @@ On **Repository Name** add:
 *XXXXXXXXXXXX.dkr.ecr.$REGION.amazonaws.com/tqtest-ecr-hello-world* (change XXXXXX with AWS account number and REGION accordingly to your account)  
 On TAG add: *v_$BUILD_NUMBER*  
 
-Add another build step by selecting **execute shell**. In the command field, type or paste the following text: (set REPOSITORY and REGION accordingly to your account) 
+Add another build step by selecting **execute shell**. In the command field, type or paste the following text: (set REPOSITORY_NAME and REGION accordingly to your account) 
 
 ```
 #!/bin/bash
@@ -120,7 +120,7 @@ REPOSITORY_NAME=tqtest-ecr-hello-world
 CLUSTER=typeqast-workshop
 FAMILY=`sed -n 's/.*"family": "\(.*\)",/\1/p' taskdef.json`
 NAME=`sed -n 's/.*"name": "\(.*\)",/\1/p' taskdef.json`
-SERVICE_NAME=${NAME}-service-test
+SERVICE_NAME=${NAME}-service-test-05
 env
 aws configure list
 echo $HOME
