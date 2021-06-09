@@ -120,7 +120,7 @@ REPOSITORY_NAME=tqtest-ecr-hello-world
 CLUSTER=typeqast-workshop
 FAMILY=`sed -n 's/.*"family": "\(.*\)",/\1/p' taskdef.json`
 NAME=`sed -n 's/.*"name": "\(.*\)",/\1/p' taskdef.json`
-SERVICE_NAME=${NAME}-service-test-06
+SERVICE_NAME=${NAME}-service-test-07
 env
 aws configure list
 echo $HOME
@@ -138,11 +138,11 @@ if [ "$SERVICES" == "" ]; then
   echo "entered existing service"
   DESIRED_COUNT=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION} | jq .services[].desiredCount`
   if [ ${DESIRED_COUNT} = "0" ]; then
-    DESIRED_COUNT="2"
+    DESIRED_COUNT="1"
   fi
   aws ecs update-service --cluster ${CLUSTER} --region ${REGION} --service ${SERVICE_NAME} --task-definition ${FAMILY}:${REVISION} --desired-count ${DESIRED_COUNT}
 else
-  DESIRED_COUNT="2"
+  DESIRED_COUNT="1"
   echo "entered new service"
   aws ecs create-service --service-name ${SERVICE_NAME} --desired-count ${DESIRED_COUNT} --task-definition ${FAMILY} --cluster ${CLUSTER} --region ${REGION}
 fi  
