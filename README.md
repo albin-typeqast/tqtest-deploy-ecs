@@ -120,7 +120,7 @@ REPOSITORY_NAME=tqtest-ecr-hello-world
 CLUSTER=typeqast-workshop
 FAMILY=`sed -n 's/.*"family": "\(.*\)",/\1/p' taskdef.json`
 NAME=`sed -n 's/.*"name": "\(.*\)",/\1/p' taskdef.json`
-SERVICE_NAME=${NAME}-service-test-07
+SERVICE_NAME=${NAME}-tqworkshop-service-01
 env
 aws configure list
 echo $HOME
