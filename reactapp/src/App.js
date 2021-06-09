@@ -19,6 +19,7 @@ function App() {
         </a>
       </header>
     </div>
+    <div> Hello World by Typeqast workshop :) </div>
   );
 }
 
