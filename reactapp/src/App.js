@@ -9,7 +9,7 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
-    	<p> .Good bye world by Typeqast workshop :) </p>
+    	<p> Hello world by Typeqast, best workshop ever :) </p>
     	<p> 2nd line test --force-new-deployment </p>
         <a
           className="App-link"
