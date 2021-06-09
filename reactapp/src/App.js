@@ -9,6 +9,7 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
+    	<p> Hello World by Typeqast workshop :) </p>
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -19,7 +20,6 @@ function App() {
         </a>
       </header>
     </div>
-    <div> Hello World by Typeqast workshop :) </div>
   );
 }
 
