@@ -15,10 +15,10 @@
 
 
 # General variables
-REGION="eu-west-1"
+REGION="eu-central-1"
 PROFILE="tq-dev"
 # alias of KeyPair used to connect to instances
-KEYPAIR="tqtest-albin"
+KEYPAIR="tqtest-workshop"
 
 # CloudFormation stack names
 ECSCLUSTER_STACKNAME="EcsClusterStack"
