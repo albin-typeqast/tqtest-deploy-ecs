@@ -78,7 +78,7 @@ Add webhook
 
 
 ## Configure Jenkins job
-Create a **freestyle project** in Jenkins and add name  
+Create a **freestyle project** in Jenkins and add name (without space characters!!!) 
 
 Under **source code management**, select **git** and type the name of personal GitHub repository you have created earlier, *https://github.com/SOME_PERSONAL_REPO/tqtest-deploy-ecs.git*  
 
