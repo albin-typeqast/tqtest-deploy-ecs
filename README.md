@@ -76,13 +76,13 @@ Refresh page after one min
 In GitHub personal repo, click settings (**Not main settings! It is Repo settings**)  
 Under settings, select **Webhooks**  
 Add **Payload URL** of your Jenkins public hostname and add sufix github-webhook/ (**Note the slash character "/" at the end, without it, it won't work**)  
-Example: *http://ec2-3-120-237-218.eu-central-1.compute.amazonaws.com/github-webhook/*    
+Example: *http://ec2-x-x-x-x.eu-central-1.compute.amazonaws.com/github-webhook/*    
 Check active box before adding webhook  
 Add webhook  
 
 
 ## Configure Jenkins job
-Create a **freestyle project** in Jenkins and add name  
+Create a **freestyle project** in Jenkins and add name (without space characters!!!) 
 
 Under **source code management**, select **git** and type the name of personal GitHub repository you have created earlier, *https://github.com/SOME_PERSONAL_REPO/tqtest-deploy-ecs.git*  
 
@@ -100,7 +100,7 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 sudo chmod 777 /var/run/docker.sock
 PATH=$PATH:/usr/local/bin; export PATH
-REGION=eu-west-1
+REGION=eu-central-1
 ECR_REPO="XXXXXXXXXXXX.dkr.ecr.$REGION.amazonaws.com/tqtest-ecr-hello-world"
 #$(aws ecr get-login --region ${REGION})
 aws ecr get-login --no-include-email --region ${REGION}>>login.sh
@@ -119,12 +119,12 @@ Add another build step by selecting **execute shell**. In the command field, typ
 set -x
 #Constants
 PATH=$PATH:/usr/local/bin; export PATH
-REGION=eu-west-1
+REGION=eu-central-1
 REPOSITORY_NAME=tqtest-ecr-hello-world
 CLUSTER=typeqast-workshop
 FAMILY=`sed -n 's/.*"family": "\(.*\)",/\1/p' taskdef.json`
 NAME=`sed -n 's/.*"name": "\(.*\)",/\1/p' taskdef.json`
-SERVICE_NAME=${NAME}-service-test-05
+SERVICE_NAME=${NAME}-tqworkshop-service-01
 env
 aws configure list
 echo $HOME
@@ -142,11 +142,11 @@ if [ "$SERVICES" == "" ]; then
   echo "entered existing service"
   DESIRED_COUNT=`aws ecs describe-services --services ${SERVICE_NAME} --cluster ${CLUSTER} --region ${REGION} | jq .services[].desiredCount`
   if [ ${DESIRED_COUNT} = "0" ]; then
-    DESIRED_COUNT="2"
+    DESIRED_COUNT="1"
   fi
   aws ecs update-service --cluster ${CLUSTER} --region ${REGION} --service ${SERVICE_NAME} --task-definition ${FAMILY}:${REVISION} --desired-count ${DESIRED_COUNT}
 else
-  DESIRED_COUNT="2"
+  DESIRED_COUNT="1"
   echo "entered new service"
   aws ecs create-service --service-name ${SERVICE_NAME} --desired-count ${DESIRED_COUNT} --task-definition ${FAMILY} --cluster ${CLUSTER} --region ${REGION}
 fi  
