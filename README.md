@@ -53,10 +53,10 @@ Script just executes three commands:
 
 You can also run the commands manually 
 
-Deployed infra: 
-![alt text](https://github.com/albin-typeqast/tqtest-deploy-ecs/infrastructure_scheme_demo.png "Deployed demo infrastructure")
-As mentioned above, this is just for demonstration purposes, DO NOT USE IN PRODUCTION!
-More secure setup is configured by finishing exercises at the end of this README document.
+Deployed infra:   
+![alt text](/infrastructure_scheme_demo.png "Deployed demo infrastructure")  
+As mentioned above, this is just for demonstration purposes, DO NOT USE IN PRODUCTION!  
+More secure setup is configured by finishing exercises at the end of this README document.  
 
 ## Configure Jenkins
 In EC2 console look for Jenkins instance and copy initial pass from syslog (search on the end of log for "**Jenkins initial password**")
@@ -174,10 +174,10 @@ Find some free domain provider and setup Route53 to resolve our page on new doma
 ### Put Jenkins server in private subnet and setup bastion host in front  
 Move jenkins EC2 instance to private subnet and configure bastion in public one with correct security groups
 
-How it should look like after finishing exercises:
-![alt text](https://github.com/albin-typeqast/tqtest-deploy-ecs/infrastructure_scheme_proper.png "More secure infrastructure")
+How it should look like after finishing exercises:  
+![alt text](/infrastructure_scheme_proper.png "More secure infrastructure")  
 
 Still this is not ready for production environments, because it lacks some support services around the infra for the app to be properly secured.
-This was just for demonstration purposes.
+This was just for demonstration purposes.  
 
 
